@@ -29,8 +29,7 @@ and how shared bikes contribute to transportation sustainability.
 Exploring these elements can help enhance the efficiency and reach of
 similar systems globally.
 
-More information can be found at [here](https://capitalbikeshare.com and https://capitalbikeshare.com/system-data.)
-[Mage AI](https://www.mage.ai)
+More information can be found at the [capital bikeshare website](https://capitalbikeshare.com) and [Capital Bikeshare System Data](https://capitalbikeshare.com/system-data.)
 
 # Data
 
