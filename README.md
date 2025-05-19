@@ -13,7 +13,7 @@ The dataset contains anonymized historical ride data from Capital Bikeshare. Bel
 Your Project Title
 ================
 
-- <a href="#introduction" id="toc-introduction">Introduction</a>
+<a href="#introduction" id="toc-introduction">Introduction</a>
 - <a href="#data" id="toc-data">Data</a>
 - <a href="#questions" id="toc-questions">Questions</a>
   - <a href="#question-1" id="toc-question-1">Question 1</a>
