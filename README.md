@@ -3,6 +3,7 @@ Capital Bikeshare Analysis using Rstudio
 
 - <a href="#introduction" id="toc-introduction">Introduction</a>
 - <a href="#data" id="toc-data">Data</a>
+- <a href="#preprocessing" id="toc-preprocessing">Preprocessing</a>
 - <a href="#questions" id="toc-questions">Questions</a>
   - <a href="#question-1" id="toc-question-1">Question 1</a>
   - <a href="#question-2" id="toc-question-2">Question 2</a>
