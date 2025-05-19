@@ -34,7 +34,7 @@ More information can be found at the [capital bikeshare website](https://capital
 # Data
 
 The raw data used for this project is from [Capital Bikeshare public Systems-Data](https://capitalbikeshare.com/system-data)
-bicycle-sharing program . The dataset consists of historical ride data that captures
+for its bicycle-sharing program . The dataset consists of historical ride data that captures
 various aspects of the bike trips taken by users of the system in Washington, D.C., and its surrounding
 areas. The
 information provided is anonymized and made publicly available by
