@@ -1,0 +1,235 @@
+---
+title: "INTROCW"
+author: "Christian"
+date: "2024-10-17"
+output: html_document
+---
+
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("here")
+library("janitor")
+library("lubridate")
+library("knitr")
+library("gapminder")
+library("gridExtra")
+library("kableExtra")
+library("ggplot2")
+library("leaflet")
+library("RColorBrewer")
+```
+
+# Introduction
+
+This report focuses on analyzing bike rides from Capital Bikeshare a bicycle-sharing system operating in Washington, D.C. and surrounding areas. The system offers both casual and registered users access to a network of stations, promoting an eco-friendly mode of transport. Studying this data is valuable as it provides insights into urban mobility patterns, the impact of pricing structures on rides durations, and how shared bikes contribute to transportation sustainability. Exploring these elements can help enhance the efficiency and reach of similar systems globally. \# Data
+
+# Data
+The raw data used for this coursework is from Capital Bikeshare, a public bicycle-sharing program in Washington, D.C., and its surrounding areas. The dataset consists of historical ride data that captures various aspects of the bike trips taken by users of the system. The information provided is anonymized and made publicly available by Capital Bikeshare.
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+read_lines(file = here("data", "rides_2020_2021_extract.csv"), n_max = 2L) #To read a section of the data to know what it looks like
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+df <- read_csv(file = here("data", "rides_2020_2021_extract.csv")) #To import the data into r
+```
+
+```{r}
+ glimpse(df)
+    df <- clean_names(df) # To both clean the column name and get a glimpse of what the tibble currently looks like
+```
+
+
+```{r}
+# turning to date time data type
+df <- df %>%
+  mutate(start_date = ymd_hms(start_date, tz = "Etc/GMT-4")) %>%
+  mutate(end_date = ymd_hms(end_date, tz = "Etc/GMT-4"))
+```
+
+The `start_date` and `end_date` columns from character is coverted to the `datetime` format using `ymd_hms()`, with the appropriate time zone.
+
+cleaning duration column
+```{r}
+
+# Removing invalid duration values
+df <- df %>%
+  mutate(duration = na_if(duration, "---")) 
+```
+
+Invalid values in the `duration` column, such as the placeholder `---`, is replaced with `NA`.
+
+```{r}
+df <- df %>% 
+  mutate(duration = as.double(duration)) 
+```
+
+`duration` column converted to a numeric data type (`double`) so that we can perform mathematical operations, such as calculating averages or filtering the data by ride length.
+
+```{r}
+df <- df %>%
+  mutate(duration = ifelse(duration < 0, NA, duration)) %>%
+  mutate(duration = ifelse(year(start_date)== "2020" & duration > 2700, NA, duration)) %>% 
+  mutate(duration = ifelse(year(start_date) == "2021" & duration > 1800, NA, duration))
+```
+
+`duration` column cleaned by removing negative values and unrealistic ride durations based on historical limits (30 minutes in 2020 and 45 minutes in 2021 for members). This step ensures we only keep plausible trip durations for our analysis.
+
+Cleaning `members casual`
+```{r}
+df <- df %>% 
+  mutate(member_casual = tolower(member_casual))
+```
+
+`member_casual` column standardized by converting all values to lowercase. This helps avoid inconsistencies in categorical data, such as different capitalizations for the same label (e.g., `Member` and `member`).
+
+Tidy
+```{r}
+df_clean <- df %>% 
+  select(-bike_number, -ride_id, -start_lat, -start_lng, -end_lat, -end_lng, -is_equity)
+```
+
+columns that are not necessary for the analysis removed, such as geospatial information (start_lat, start_lng, etc.), bike_number, ride_id, and is_equity. These columns either contain too many missing values or are not relevant to the research questions created below.
+
+```{r}
+# Rows that have missing values in important columns filtered out.
+df_clean <- df_clean %>% 
+  filter(!is.na(duration)) %>% 
+  filter(!is.na(start_station_id)) %>%
+  filter(!is.na(end_station_id)) %>%
+  filter(!is.na(rideable_type))
+```
+
+
+```{r}
+ glimpse(df_clean)
+```
+
+`glimpse()` used to check the structure of the cleaned dataset and ensure that the data types are correct and the dataset is ready for further analysis.
+
+# Questions
+
+## Question 1
+
+**1. What are the differences in ride duration between casual riders and members?**
+
+To explore this question, the `duration` of rides between casual and member riders are compared. The `member_casual` column distinguishes the ridetype, while the `duration` column, converted to minutes (for clearer analysis), provides the length of each trip. The analysis will calculate and visualize the average, median, and distribution of ride durations for each group. This will help identify any significant differences in how long rides tend to last based on rider type.
+
+## Question 2
+
+**2. How does the popularity of bike-sharing stations vary across different locations?**
+
+To answer this question, the `start_station_name` and `end_station_name` columns are used to identify the most frequently used stations. By counting the number of rides starting and ending at each station, I can determine which stations are most popular.
+
+## Question 3
+
+**3. How does the average ride duration vary across different rideable types and times of the day?**
+
+This question explores how ride durations change based on both the type of bike (`rideable_type`: classic, electric, dockable.) and the time of day (morning, afternoon, evening). The goal is to determine whether certain bike types are used more frequently for longer or shorter rides during specific times of day.`rideable_type` used to find the different bike types,Time extracted from the `start_date` and grouped (e.g., morning, afternoon, evening) and, `duration` to find the continuous variable for the ride duration.
+
+# Analysis
+
+## Answer to qustion 1
+```{r}
+summary_stats <- df_clean %>%
+  group_by(member_casual) %>%
+  summarise(
+    avg_duration = mean(duration, na.rm = TRUE),
+    median_duration = median(duration, na.rm = TRUE),
+    min_duration = min(duration, na.rm = TRUE),
+    max_duration = max(duration, na.rm = TRUE)
+  )
+```
+
+Summary statistics (mean, median, min, max) is calulated for duration based on the member_casual variable, using the duration column. The distribution of ride durations for both casual and member riders also visualized using a density plot, which allows us to compare the spread of durations.
+
+```{r message=FALSE, warning=FALSE}
+ggplot(df_clean, aes(x = duration, fill = member_casual)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~member_casual) +
+  scale_x_log10() +  # Log scale to better handle skewed data
+  labs(
+    title = "Distribution of Ride Duration for Members vs Casual Riders",
+    x = "Duration (minutes)",
+    y = "Density"
+  ) +
+  theme_minimal() +
+  scale_fill_discrete(name = "Rider Type")
+```
+
+Density plot created to show the ride duration distribution for both member and casual riders.
+
+The majority of casual riders take trips that are longer in duration, with a peak density after 1000 minutes. casual riders also show a tighter distribution with most around the 700 - 1000 minutes mark. This indicates that casual riders are more likely to take longer trips compared to members.
+Members show a broader distribution with rides peaking around the 700 minutes mark. Members are more likely to take shorter rides compared to casual riders, which aligns with the membership structure of motivating frequent, shorter trips.
+
+
+## Answer to question 2
+
+```{r}
+station_popularity <- df_clean %>%
+  count(start_station_name, sort = TRUE) %>%
+  top_n(10, n)
+```
+
+Number of rides starting from and ending at each station counted,  top 10 most popular stations identified. A bar chart will be used to visualize this.
+
+```{r}
+ggplot(station_popularity, aes(x = reorder(start_station_name, n), y = n)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  coord_flip() +
+  labs(
+    title = "Top 10 Most Popular Start Stations",
+    x = "Station Name",
+    y = "Number of Rides"
+  ) +
+  theme_minimal()
+```
+
+bar chart created to display the top 10 most popular stations.
+
+
+**New Hampshire Ave & T St NW** is the most popular station, with over 15,000 rides starting and ending there.**15th & P St NW and 1st & M St NE** follow closely.The concentration of popular stations in the NW quadrant of Washington, D.C., might suggest that this region has higher demand for bike-sharing services, possibly due to denser population or more biking infrastructure.
+
+## Answer to question 3
+
+```{r}
+df_clean <- df_clean %>%
+  mutate(hour = hour(start_date),
+         time_of_day = case_when(
+           hour >= 6 & hour < 12 ~ "Morning",
+           hour >= 12 & hour < 18 ~ "Afternoon",
+           hour >= 18 & hour < 24 ~ "Evening",
+           TRUE ~ "Night"))
+```
+
+new column created called time_of_day that categorizes rides into time period
+
+```{r message=FALSE, warning=FALSE}
+avg_duration_by_type_time <- df_clean %>%
+  group_by(rideable_type, time_of_day) %>%
+  summarise(avg_duration = mean(duration, na.rm = TRUE))
+```
+
+average duration for each rideable_type and time_of_day combination calculated.
+
+```{r message=FALSE, warning=FALSE}
+ggplot(avg_duration_by_type_time, aes(x = time_of_day, y = rideable_type, fill = avg_duration)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "lightblue", high = "darkblue", name = "Avg Duration (mins)") +
+  labs(title = "Average Ride Duration by Bike Type and Time of Day",
+       x = "Time of Day", y = "Bike Type") +
+  theme_minimal()
+```
+Majority of type of bicycles used are the docked bikes, this is evident by a continuous darker shade all throughout the day from morning to night. Afternoon time is also the most popular usage time for all three of the types of rides. This insight could help in understanding user preferences and operational efficiency of different bike types and potentially guide decisions about how many of each type of bike to provide at certain times of the day.
+
+
+# Conclusion
+
+* Casual riders tend to take longer trips compared to members, who generally prefer shorter, more frequent rides. This aligns with the membership pricing structure.
+
+* Stations in Washington D.C.'s NW quadrant are the most popular, likely due to higher population density or better biking infrastructure.
+
+* Docked bikes are the most used throughout the day, with peak usage occurring in the afternoon across all bike types. 
+
+* Future Research: Investigate how seasonal changes or weather patterns influence station popularity and ride duration to optimize bike-sharing operations
+
