@@ -1,5 +1,6 @@
 🚲Capital Bikeshare Analysis using Rstudio
 ================
+**Author: Christian Ifashe** | **date: 2024-10-17**
 ### Table Of Content
 - <a href="#introduction" id="toc-introduction">Introduction</a>
 - <a href="#data" id="toc-data">Data</a>
