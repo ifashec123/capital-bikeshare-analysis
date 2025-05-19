@@ -29,9 +29,12 @@ and how shared bikes contribute to transportation sustainability.
 Exploring these elements can help enhance the efficiency and reach of
 similar systems globally.
 
+More information can be found at [here](https://capitalbikeshare.com and https://capitalbikeshare.com/system-data.)
+[Mage AI](https://www.mage.ai)
+
 # Data
 
-The raw data used for this coursework is from Capital Bikeshare, a
+The raw data used for this project is from Capital Bikeshare, a
 public bicycle-sharing program in Washington, D.C., and its surrounding
 areas. The dataset consists of historical ride data that captures
 various aspects of the bike trips taken by users of the system. The
