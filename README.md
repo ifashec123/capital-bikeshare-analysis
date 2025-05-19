@@ -220,7 +220,7 @@ ggplot(df_clean, aes(x = duration, fill = member_casual)) +
   scale_fill_discrete(name = "Rider Type")
 ```
 
-![](introcw_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![question1](https://github.com/user-attachments/assets/2700c485-a968-4433-aadd-b239ff1d6c7f)
 
 Density plot created to show the ride duration distribution for both
 member and casual riders.
@@ -257,8 +257,7 @@ ggplot(station_popularity, aes(x = reorder(start_station_name, n), y = n)) +
   ) +
   theme_minimal()
 ```
-
-![](introcw_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![Question2](https://github.com/user-attachments/assets/86e27e12-36b4-401e-b3fa-9c5e5761424c)
 
 bar chart created to display the top 10 most popular stations.
 
@@ -301,9 +300,9 @@ ggplot(avg_duration_by_type_time, aes(x = time_of_day, y = rideable_type, fill =
        x = "Time of Day", y = "Bike Type") +
   theme_minimal()
 ```
+![Question3](https://github.com/user-attachments/assets/95354f14-c850-44f9-8d4e-4826c3eb5d25)
 
-![](introcw_files/figure-gfm/unnamed-chunk-19-1.png)<!-- --> Majority of
-type of bicycles used are the docked bikes, this is evident by a
+Majority of the type of bicycles used are the docked bikes, this is evident by a
 continuous darker shade all throughout the day from morning to night.
 Afternoon time is also the most popular usage time for all three of the
 types of rides. This insight could help in understanding user
