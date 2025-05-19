@@ -29,14 +29,14 @@ and how shared bikes contribute to transportation sustainability.
 Exploring these elements can help enhance the efficiency and reach of
 similar systems globally.
 
-More information can be found at the [capital bikeshare website](https://capitalbikeshare.com) and [Capital Bikeshare System Data](https://capitalbikeshare.com/system-data.)
+More information can be found at the [capital bikeshare website](https://capitalbikeshare.com) 
 
 # Data
 
-The raw data used for this project is from Capital Bikeshare, a
-public bicycle-sharing program in Washington, D.C., and its surrounding
-areas. The dataset consists of historical ride data that captures
-various aspects of the bike trips taken by users of the system. The
+The raw data used for this project is from [Capital Bikeshare public Systems-Data](https://capitalbikeshare.com/system-data.)
+bicycle-sharing program . The dataset consists of historical ride data that captures
+various aspects of the bike trips taken by users of the system in Washington, D.C., and its surrounding
+areas. The
 information provided is anonymized and made publicly available by
 Capital Bikeshare.
 
