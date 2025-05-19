@@ -62,6 +62,7 @@ glimpse(df)
     ## $ end_lng              <dbl> NA, -77.07708, -77.02576, NA, -76.99012, -77.0323…
     ## $ is_equity            <lgl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
 
+# Preprocessing
 ``` r
     df <- clean_names(df) # To both clean the column name and get a glimpse of what the tibble currently looks like
 # turning to date time data type
@@ -69,11 +70,8 @@ df <- df %>%
   mutate(start_date = ymd_hms(start_date, tz = "Etc/GMT-4")) %>%
   mutate(end_date = ymd_hms(end_date, tz = "Etc/GMT-4"))
 ```
-
-The `start_date` and `end_date` columns from character is coverted to
+1. The `start_date` and `end_date` columns from character is coverted to
 the `datetime` format using `ymd_hms()`, with the appropriate time zone.
-
-cleaning duration column
 
 ``` r
 # Removing invalid duration values
@@ -88,32 +86,29 @@ df <- df %>%
   mutate(duration = ifelse(year(start_date)== "2020" & duration > 2700, NA, duration)) %>% 
   mutate(duration = ifelse(year(start_date) == "2021" & duration > 1800, NA, duration))
 ```
-
-Invalid values in the `duration` column, such as the placeholder `---`,
+2. Invalid values in the `duration` column, such as the placeholder `---`,
 is replaced with `NA`.
 
-`duration` column converted to a numeric data type (`double`) so that we
+3. `duration` column converted to a numeric data type (`double`) so that we
 can perform mathematical operations, such as calculating averages or
 filtering the data by ride length.
 
-`duration` column cleaned by removing negative values and unrealistic
+4. `duration` column cleaned by removing negative values and unrealistic
 ride durations based on historical limits (30 minutes in 2020 and 45
 minutes in 2021 for members). This step ensures we only keep plausible
 trip durations for our analysis.
-
-Cleaning `members casual`
 
 ``` r
 df <- df %>% 
   mutate(member_casual = tolower(member_casual))
 ```
 
-`member_casual` column standardized by converting all values to
+5. `member_casual` column standardized by converting all values to
 lowercase. This helps avoid inconsistencies in categorical data, such as
 different capitalizations for the same label (e.g., `Member` and
 `member`).
 
-Tidying
+Tidying `df`
 
 ``` r
 df_clean <- df %>% 
@@ -126,7 +121,7 @@ df_clean <- df_clean %>%
   filter(!is.na(end_station_id)) %>%
   filter(!is.na(rideable_type))
 ```
-columns that are not necessary for the analysis removed, such as
+6. columns that are not necessary for the analysis removed, such as
 geospatial information (start_lat, start_lng, etc.), bike_number,
 ride_id, and is_equity. These columns either contain too many missing
 values or are not relevant to the research questions created below.
