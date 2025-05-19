@@ -1,4 +1,4 @@
-Capital Bikeshare Analysis using Rstudio
+🚲Capital Bikeshare Analysis using Rstudio
 ================
 
 - <a href="#introduction" id="toc-introduction">Introduction</a>
